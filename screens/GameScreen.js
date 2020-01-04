@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {View, Text, StyleSheet, Button, Alert} from 'react-native'
+import { Ionicons } from '@expo/vector-icons' //go to expo documentation to look for other icon libraries and see examples
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
 import DefaultStyles from '../constants/default-styles'
+import MainButton from '../components/MainButton'
 
 //doesnt use any data from within the component
 //if you dont rely on props or state put functions here
@@ -61,8 +63,12 @@ const GameScreen = props => {
 	<Text style={DefaultStyles.title}>Opponents Guess</Text>
 	<NumberContainer> {currentGuess} </NumberContainer>
 	<Card style={styles.buttonContainer}>
-		<Button title='Lower' onPress={nextGuessHandler.bind(this, 'lower')} />
-		<Button title='Higher' onPress={nextGuessHandler.bind(this, 'higher')} />
+		<MainButton onPress={nextGuessHandler.bind(this, 'lower')} >
+			<Ionicons name="md-remove" size={24} color='white' />
+		</MainButton>
+		<MainButton onPress={nextGuessHandler.bind(this, 'higher')} >
+		<Ionicons name="md-add" size={24} color='white' />
+		</MainButton>
 	</Card>
 </View>
 		);
@@ -78,8 +84,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		marginTop: 20,
-		width: 300,
-		maxWidth: '80%'
+		width: 400,
+		maxWidth: '90%'
 	}
 });
 
