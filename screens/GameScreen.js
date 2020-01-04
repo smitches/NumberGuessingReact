@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Button, Alert} from 'react-native'
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
+import DefaultStyles from '../constants/default-styles'
 
 //doesnt use any data from within the component
 //if you dont rely on props or state put functions here
@@ -57,7 +58,7 @@ const GameScreen = props => {
 
 	return (
 <View style={styles.screen}>
-	<Text>Opponents Guess</Text>
+	<Text style={DefaultStyles.title}>Opponents Guess</Text>
 	<NumberContainer> {currentGuess} </NumberContainer>
 	<Card style={styles.buttonContainer}>
 		<Button title='Lower' onPress={nextGuessHandler.bind(this, 'lower')} />

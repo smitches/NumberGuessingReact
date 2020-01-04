@@ -12,6 +12,7 @@ import Colors from '../constants/colors'
 import Input from '../components/Input'
 import NumberContainer from '../components/NumberContainer'
 import BodyText from '../components/BodyText'
+import TitleText from '../components/TitleText'
 
 const HomeScreen = props => {
 	const [enteredValue,setEnteredValue] = useState('')
@@ -64,7 +65,7 @@ const HomeScreen = props => {
 		Keyboard.dismiss();
 	}}>
 	<View style={styles.screen}>
-		<Text style={styles.title}> Begin Game from Home </Text>
+		<TitleText style={styles.title}> Begin Game from Home </TitleText>
 		<Card style={styles.inputContainer}>
 			<BodyText>Select a Number</BodyText>
 			<Input 
