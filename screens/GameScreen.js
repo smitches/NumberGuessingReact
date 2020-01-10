@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {View, Text, StyleSheet, Button, Alert} from 'react-native'
+import {View, Text, StyleSheet, Button, Alert, ScrollView, FlatList} from 'react-native'
 import { Ionicons } from '@expo/vector-icons' //go to expo documentation to look for other icon libraries and see examples
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
 import DefaultStyles from '../constants/default-styles'
 import MainButton from '../components/MainButton'
-
+import BodyText from '../components/BodyText'
 //doesnt use any data from within the component
 //if you dont rely on props or state put functions here
 const generateRandomBetween = (min, max, exclude) => {
@@ -19,9 +19,24 @@ const generateRandomBetween = (min, max, exclude) => {
 	return rndNum
 }
 
+const renderListItem = (value, numOfRound) => (
+		<View key={value} style={styles.listItem} >
+			<BodyText>#{numOfRound}</BodyText>
+			<BodyText>{value}</BodyText>
+		</View>
+)
+
+const renderListItemFlatList = (listLength, itemData) => (
+	<View style={styles.listItem} >
+		<BodyText>#{listLength - itemData.index}</BodyText>
+		<BodyText>{itemData.item}</BodyText>
+	</View>
+)
+
 const GameScreen = props => {
-	const [currentGuess, setCurrentGuess] = useState(generateRandomBetween(1, 100, props.userChoice))
-	const [rounds, setRounds] = useState(0);
+	const initialGuess = generateRandomBetween(1, 100, props.userChoice)
+	const [currentGuess, setCurrentGuess] = useState(initialGuess)
+	const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
 
 	const currentLow = useRef(1);
 	const currentHigh = useRef(100);
@@ -33,7 +48,7 @@ const GameScreen = props => {
 	//runs after its been rendered
 	useEffect(() => {
 		if (currentGuess === userChoice){
-			onGameOver(rounds);
+			onGameOver(pastGuesses.length);
 		}
 	}, [currentGuess, userChoice, onGameOver])
 	//first argument is a function. second is dependencies. effect reruns if one of dependencies changes
@@ -51,11 +66,12 @@ const GameScreen = props => {
 			currentHigh.current = currentGuess
 		}
 		else{
-			currentLow.current = currentGuess
+			currentLow.current = currentGuess + 1
 		}
 		const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess)
 		setCurrentGuess(nextNumber) //rerenders component
-		setRounds(curRounds => curRounds + 1)
+		setPastGuesses(curPastGuesses => [nextNumber.toString(),...curPastGuesses])
+		// setRounds(curRounds => curRounds + 1)
 	}
 
 	return (
@@ -70,6 +86,17 @@ const GameScreen = props => {
 		<Ionicons name="md-add" size={24} color='white' />
 		</MainButton>
 	</Card>
+	<View style={styles.listContainer} >
+		{/*<ScrollView contentContainerStyle={styles.list}>
+		{pastGuesses.map((guess,index) => (renderListItem(guess, pastGuesses.length - index)))}
+		</ScrollView>*/}
+		<FlatList 
+			keyExtractor={(item)=>item} 
+			data={pastGuesses} 
+			renderItem={renderListItemFlatList.bind(this, pastGuesses.length)} 
+			contentContainerStyle={styles.list}
+		/>
+	</View>
 </View>
 		);
 }
@@ -86,6 +113,25 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		width: 400,
 		maxWidth: '90%'
+	},
+	listItem: {
+		padding: 15,
+		marginVertical: 10,
+		borderColor: '#ccc',
+		borderWidth: 1,
+		backgroundColor: 'white',
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		width: '100%',
+	},
+	listContainer:{
+		flex: 1, //necessary for android to work
+		width: '60%'
+	},
+	list:{
+		alignItems: 'center', //for cross axis
+		justifyContent: 'flex-end',
+		flexGrow: 1,
 	}
 });
 
